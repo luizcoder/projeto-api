@@ -25,9 +25,31 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return User::all();
+        //Paginação padrão
+        $per_page = 10;
+
+        //Caso seja enviado paramento de paginação
+        //o valor padrão será alterado
+        if($request->input('per_page')){
+            $per_page = $request->input('per_page');
+        }
+
+        //Caso seja enviado paramento para busca
+        if($request->input('search')){
+
+            $users = User::search($request->input('search'))
+                        ->paginate($per_page);
+
+        // Se nenhum parametro for enviado
+        // retorna todos os dados da tabela
+        }else{
+
+            $users = User::paginate($per_page);
+        }
+
+        return $users;
     }
 
     /**
