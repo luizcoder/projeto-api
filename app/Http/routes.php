@@ -16,9 +16,17 @@ Route::get('/', function () {
 });
 
 Route::group(['prefix'=>'api'],function(){
-    
-    Route::get('auth/user','Auth\AuthenticateController@getAuthenticatedUser');
-    Route::post('auth','Auth\AuthenticateController@authenticate');
-    
-    Route::resource('user','Auth\UserController');
+
+
+    /*
+     * Rotas para autenticação de usuários
+     */
+     Route::post('auth','Auth\AuthenticateController@authenticate'); // Autentica usuário
+     Route::get('auth/user','Auth\AuthenticateController@getAuthenticatedUser'); // Retorna usuário autenticado
+
+    /*
+     * Rotas para cadastro de usuários
+     */
+     Route::resource('user','User\UserController');
+
 });

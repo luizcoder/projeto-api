@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\User;
 
-use App\User;
+use App\Models\User;
 use Validator;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    
+
     public function __construct()
     {
        // Apply the jwt.auth middleware to all methods in this controller
@@ -18,8 +18,8 @@ class UserController extends Controller
        // the user from retrieving their token if they don't already have it
        $this->middleware('jwt.auth');
     }
-    
-    
+
+
     /**
      * Display a listing of the resource.
      *
@@ -121,7 +121,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if(User::findOrFail($id)->delete() ) {
+        if(User::findOrFail($id)->delete()) {
             return ['deleted'=>true];
         }else{
             return ['deleted'=>true];

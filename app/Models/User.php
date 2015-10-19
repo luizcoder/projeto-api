@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -42,7 +42,7 @@ class User extends Model implements AuthenticatableContract,
     /**
      * Colunas que serão utilizadas para busca rápida
      *
-     * @var array    
+     * @var array
      */
     protected $searchable = ['name' ,'email'];
 
