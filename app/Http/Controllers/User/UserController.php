@@ -19,7 +19,6 @@ class UserController extends Controller
        $this->middleware('jwt.auth');
     }
 
-
     /**
      * Display a listing of the resource.
      *
@@ -74,6 +73,7 @@ class UserController extends Controller
         $data = $request->only(['name','email','password','password_confirmation']);
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
+
         return $user;
     }
 
@@ -110,7 +110,34 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->update(['name'=> $request->input('name'), 'email'=>$request->input('email')]);
+
         return $user;
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePassword(Request $request, $id)
+    {
+
+        $data = $request->only(['password','password_confirmation']);
+        $validator = Validator::make($data, [
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return ['updated' => false,'errors' => $validator->errors()->all()];
+        }
+
+        $user = User::findOrFail($id);
+        $user->update(['password'=> bcrypt($request->input('password'))]);
+
+        return ['updated' => true];
+
     }
 
     /**
@@ -124,7 +151,7 @@ class UserController extends Controller
         if(User::findOrFail($id)->delete()) {
             return ['deleted'=>true];
         }else{
-            return ['deleted'=>true];
+            return ['deleted'=>false];
         }
     }
 }

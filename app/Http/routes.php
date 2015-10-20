@@ -25,8 +25,9 @@ Route::group(['prefix'=>'api'],function(){
      Route::get('auth/user','Auth\AuthenticateController@getAuthenticatedUser'); // Retorna usuário autenticado
 
     /*
-     * Rotas para cadastro de usuários
+     * Rotas para cadastro e alteração de usuários
      */
      Route::resource('user','User\UserController');
+     Route::post('user/password/{id}','User\UserController@updatePassword');
 
 });
