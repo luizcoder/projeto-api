@@ -24,6 +24,7 @@ class AuthenticateController extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->only('username', 'password');
+        $credentials['status'] = 'ativo';
         try {
             // verify the credentials and create a token for the user
             if (! $token = JWTAuth::attempt($credentials)) {
