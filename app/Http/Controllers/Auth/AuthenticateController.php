@@ -12,7 +12,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthenticateController extends Controller
 {
-   
+
     public function __construct()
     {
        // Apply the jwt.auth middleware to all methods in this controller
@@ -23,7 +23,7 @@ class AuthenticateController extends Controller
 
     public function authenticate(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
         try {
             // verify the credentials and create a token for the user
             if (! $token = JWTAuth::attempt($credentials)) {

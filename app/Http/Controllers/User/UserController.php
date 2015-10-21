@@ -71,13 +71,14 @@ class UserController extends Controller
     {
 
         $data = $request->only(['username','name','email','status','password','password_confirmation']);
+
         $validator = Validator::make($data, [
             'username' => 'required|unique:users|min:4',
             'name' => 'required',
             'email' => 'required|email',
             'status' => 'required',
             'password' => 'required',
-            'password_confirmation' => 'required|same:password',
+            'password_confirmation' => 'required | same:password',
 
         ]);
         if ($validator->fails()) {
