@@ -24,6 +24,13 @@ Route::group(['prefix'=>'api'],function(){
      Route::post('auth','Auth\AuthenticateController@authenticate'); // Autentica usuário
      Route::get('auth/user','Auth\AuthenticateController@getAuthenticatedUser'); // Retorna usuário autenticado
 
+     /*
+      * Rotas para recuperação de senha
+      */
+     Route::post('password/email', 'Auth\PasswordController@postEmail');
+     Route::post('password/reset', 'Auth\PasswordController@postReset');
+
+
     /*
      * Rotas para cadastro e alteração de usuários
      */
