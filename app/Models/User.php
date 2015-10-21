@@ -30,7 +30,7 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['username','name', 'email', 'password','status'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -44,7 +44,7 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $searchable = ['name' ,'email'];
+    protected $searchable = ['username','name' ,'email','status'];
 
 
     public function getCreatedAtAttribute($date)

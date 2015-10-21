@@ -29,5 +29,5 @@ Route::group(['prefix'=>'api'],function(){
      */
      Route::resource('user','User\UserController');
      Route::post('user/password/{id}','User\UserController@updatePassword');
-
+     Route::get('user/checkUnique/{username}/{id?}','User\UserController@checkUnique');
 });

@@ -70,11 +70,23 @@ class UserController extends Controller
     public function store(Request $request)
     {
 
-        $data = $request->only(['name','email','password','password_confirmation']);
+        $data = $request->only(['username','name','email','status','password','password_confirmation']);
+        $validator = Validator::make($data, [
+            'username' => 'required|unique:users|min:4',
+            'name' => 'required',
+            'email' => 'required|email',
+            'status' => 'required',
+            'password' => 'required',
+            'password_confirmation' => 'required|same:password',
+
+        ]);
+        if ($validator->fails()) {
+            return ['created' => false,'errors' => $validator->errors()->all()];
+        }
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
 
-        return $user;
+        return ['created' => true,'user' => $user];
     }
 
     /**
@@ -108,10 +120,20 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $data = $request->only(['username','name','email','password','status','password_confirmation']);
+        $validator = Validator::make($data, [
+            'username' => 'required|unique:users,username,'.$id.'|min:4',
+            'name' => 'required',
+            'email' => 'required|email',
+            'status' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return ['updated' => false,'errors' => $validator->errors()->all()];
+        }
         $user = User::findOrFail($id);
-        $user->update(['name'=> $request->input('name'), 'email'=>$request->input('email')]);
+        $user->update($data);
 
-        return $user;
+        return ['updated' => true,'user' => $user];
     }
 
     /**
@@ -152,6 +174,21 @@ class UserController extends Controller
             return ['deleted'=>true];
         }else{
             return ['deleted'=>false];
+        }
+    }
+
+    /**
+     * Verifica se o username é unico
+     *
+     * @param  string  $username
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function checkUnique($username, $id = null){
+        if($id == null){
+            return User::where('username',$username)->firstOrFail();
+        }else{
+            return User::where('username',$username)->where('id','<>',$id)->firstOrFail();
         }
     }
 }
