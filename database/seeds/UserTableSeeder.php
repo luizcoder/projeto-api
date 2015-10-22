@@ -21,21 +21,21 @@ class UserTableSeeder extends Seeder
                 'name'=> "Spock",
                 'email'=> "spock@startrek.com",
                 'status' => 'ativo',
-                'password'=> bcrypt("123")
+                'password'=> bcrypt("123456")
             ],
             [
                 'username'=> "james",
                 'name'=> "James",
                 'email'=> "james.t@startrek.com",
                 'status' => 'ativo',
-                'password'=> bcrypt("123")
+                'password'=> bcrypt("123456")
             ],
             [
                 'username'=> "hikaru",
                 'name'=> "Hikaru",
                 'email'=> "hikaru@startrek.com",
-                'status' => 'ativo',                
-                'password'=> bcrypt("123")
+                'status' => 'ativo',
+                'password'=> bcrypt("123456")
             ]
         ];
 

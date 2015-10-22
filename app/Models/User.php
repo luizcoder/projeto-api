@@ -18,6 +18,7 @@ class User extends Model implements AuthenticatableContract,
 {
     use Authenticatable, Authorizable, CanResetPassword, EloquentSearch;
 
+    protected $appends = ['rules'];
     /**
      * The database table used by the model.
      *
@@ -57,4 +58,34 @@ class User extends Model implements AuthenticatableContract,
         return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d/m/Y H:i:s');
     }
 
+    public function getRulesAttribute(){
+
+        return $this->rules();
+    }
+    public function groups()
+    {
+        return $this->belongsToMany('App\Models\Group');
+    }
+
+    public function hasRule($rule_name){
+        $valid = false;
+
+        $array = array_where($this->rules(), function($key, $value) use($rule_name)
+        {
+            if( $rule_name == $value['name'] ){
+                $valid = true;
+            }
+
+        });
+        return $valid;
+    }
+
+    public function rules(){
+        $rules = Rule::join('group_rule', 'rules.id', '=', 'group_rule.rule_id')
+                     ->join('group_user', 'group_user.group_id', '=', 'group_rule.group_id')
+                     ->where('group_user.user_id', $this->id)
+                     ->get();
+
+         return $rules;
+     }
 }

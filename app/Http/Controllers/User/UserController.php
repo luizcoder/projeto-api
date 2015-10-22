@@ -13,10 +13,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-       // Apply the jwt.auth middleware to all methods in this controller
-       // except for the authenticate method. We don't want to prevent
-       // the user from retrieving their token if they don't already have it
-       $this->middleware('jwt.auth');
+        //
     }
 
     /**
@@ -38,14 +35,14 @@ class UserController extends Controller
         //Caso seja enviado paramento para busca
         if($request->input('search')){
 
-            $users = User::search($request->input('search'))
+            $users = User::with(['groups','groups.rules'])->search($request->input('search'))
                         ->paginate($per_page);
 
         // Se nenhum parametro for enviado
         // retorna todos os dados da tabela
         }else{
 
-            $users = User::paginate($per_page);
+            $users = User::with(['groups','groups.rules'])->paginate($per_page);
         }
 
         return $users;
