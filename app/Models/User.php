@@ -83,18 +83,17 @@ class User extends Model implements AuthenticatableContract,
     public function hasRule($rule_name){
         $valid = false;
         $rules = $this->rules();
-        if( $rules->count() == 1 ){
-            if( $rule_name == $rules[0]->name ){
-                $valid = true;
+
+        $array = array_where($rules, function($key, $value) use($rule_name)
+        {
+            if( $rule_name == $value->name ){
+                return true;
             }
-        }elseif( $rules->count() > 1 ){
-            $array = array_where($rules, function($key, $value) use($rule_name)
-            {
-                if( $rule_name == $value['name'] ){
-                    $valid = true;
-                }
-            });
-        }
+        });
+
+        if(sizeOf($array) > 0)
+            $valid = true;
+
         return $valid;
     }
 

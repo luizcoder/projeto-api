@@ -67,7 +67,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
 
-        $data = $request->only(['username','name','email','status','password','password_confirmation']);
+        $data = $request->only(['username','name','email','status','password','password_confirmation','groups']);
 
         $validator = Validator::make($data, [
             'username' => 'required|unique:users|min:4',
@@ -83,6 +83,10 @@ class UserController extends Controller
         }
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
+
+        $user->groups()->detach();
+        $user->groups()->attach(array_pluck($data['groups'],'id'));
+        $user->load('groups');
 
         return ['created' => true,'user' => $user];
     }
@@ -118,7 +122,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->only(['username','name','email','password','status','password_confirmation']);
+        $data = $request->only(['username','name','email','status','groups']);
         $validator = Validator::make($data, [
             'username' => 'required|unique:users,username,'.$id.'|min:4',
             'name' => 'required',
@@ -131,6 +135,10 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->update($data);
 
+        $user->groups()->detach();
+        $user->groups()->attach(array_pluck($data['groups'],'id'));
+
+        $user->load('groups');
         return ['updated' => true,'user' => $user];
     }
 

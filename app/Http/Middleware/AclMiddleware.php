@@ -16,7 +16,7 @@ class AclMiddleware
      */
     public function handle($request, Closure $next)
     {
-
+        
         /*
          * Validar se o usuário possui acesso a rota requisitada
          */
