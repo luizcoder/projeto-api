@@ -16,10 +16,14 @@ class AclMiddleware
      */
     public function handle($request, Closure $next)
     {
-        // todoImplementar validação
+
+        /*
+         * Validar se o usuário possui acesso a rota requisitada
+         */
         if(Auth::user()->hasRule($request->route()->getName())){
+            return $next($request);
+        }else{
             return response('Você não tem permissão para executar essa ação!', 401);
         }
-        return $next($request);
     }
 }

@@ -18,6 +18,12 @@ class User extends Model implements AuthenticatableContract,
 {
     use Authenticatable, Authorizable, CanResetPassword, EloquentSearch;
 
+    /**
+     * Additional Columns
+     *
+     * @var string
+     */
+
     protected $appends = ['rules'];
     /**
      * The database table used by the model.
@@ -62,29 +68,44 @@ class User extends Model implements AuthenticatableContract,
 
         return $this->rules();
     }
+
     public function groups()
     {
         return $this->belongsToMany('App\Models\Group');
     }
 
+    /*
+     * Verificar se o usuário possui permissão de acesso
+     *
+     * @string name
+     * @return Boolean
+     */
     public function hasRule($rule_name){
         $valid = false;
-
-        $array = array_where($this->rules(), function($key, $value) use($rule_name)
-        {
-            if( $rule_name == $value['name'] ){
+        $rules = $this->rules();
+        if( $rules->count() == 1 ){
+            if( $rule_name == $rules[0]->name ){
                 $valid = true;
             }
-
-        });
+        }elseif( $rules->count() > 1 ){
+            $array = array_where($rules, function($key, $value) use($rule_name)
+            {
+                if( $rule_name == $value['name'] ){
+                    $valid = true;
+                }
+            });
+        }
         return $valid;
     }
 
+
+    /*
+    * Retornar lista de pesmissões do usuário
+    */
     public function rules(){
         $rules = Rule::join('group_rule', 'rules.id', '=', 'group_rule.rule_id')
                      ->join('group_user', 'group_user.group_id', '=', 'group_rule.group_id')
-                     ->where('group_user.user_id', $this->id)
-                     ->get();
+                     ->where('group_user.user_id', $this->id)->get();
 
          return $rules;
      }
