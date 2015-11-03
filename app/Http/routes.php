@@ -1,65 +1,65 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
-
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::group(['prefix'=>'api'],function(){
+// Bloco de rotas da API
+Route::group(['prefix'=>'api'], function () {
 
     /*
-     * Rotas para autenticação de usuários
-     */
-     Route::post('auth', 'Auth\AuthenticateController@authenticate')->name('autenticar.usuario'); // Autentica usuário
-     Route::get('auth/user', 'Auth\AuthenticateController@getAuthenticatedUser')->name('listar.usuario.autenticado'); // Retorna usuário autenticado
+    * Rotas para autenticação de usuários
+    */
+    // Autentica usuário
+    Route::post('auth', 'Auth\AuthenticateController@authenticate');
 
-     /*
-      * Rotas para recuperação de senha
-      */
-     Route::post('password/email', 'Auth\PasswordController@postEmail')->name('post.password.email');
-     Route::post('password/reset', 'Auth\PasswordController@postReset')->name('post.passwor.reset');
+    // Retorna usuário autenticado
+    Route::get('auth/user', 'Auth\AuthenticateController@getAuthenticatedUser');
 
+    /*
+    * Rotas para recuperação de senha
+    */
+    Route::post('password/email', 'Auth\PasswordController@postEmail');
+    Route::post('password/reset', 'Auth\PasswordController@postReset');
 
-     /*
-      * Rotas protegidas por autenticação e acls
-      */
-     Route::group(['middleware'=>['jwt.auth','acl']], function(){
+    /*
+    * Rotas protegidas por autenticação e acls
+    */
+    Route::group(['prefix'=>'user', 'middleware'=>['jwt.auth', 'acl']], function () {
         /*
-         * Rotas para cadastro e alteração de usuários
-         */
-         Route::get('user', 'User\UserController@index')->name('listar.usuario');
-         Route::post('user','User\UserController@store')->name('cadastrar.usuario');
-         Route::put('user/{id}', 'User\UserController@update')->name('alterar.usuario');
-         Route::delete('user/{id}', 'User\UserController@destroy')->name('deletar.usuario');
-         Route::post('user/password/{id}', 'User\UserController@updatePassword')->name('alterar.senha.usuario');
+        * Rotas para cadastro e alteração de usuários
+        */
+        Route::get('', 'User\UserController@index')
+        ->name('listar.usuario');
+
+        Route::post('', 'User\UserController@store')
+        ->name('cadastrar.usuario');
+
+        Route::put('{id}', 'User\UserController@update')
+        ->name('alterar.usuario');
+
+        Route::delete('{id}', 'User\UserController@destroy')
+        ->name('deletar.usuario');
+
+        Route::post('{id}/password', 'User\UserController@updatePassword')
+        ->name('alterar.senha.usuario');
+    });
 
 
-
-     });
-
-     /*
-      * Rotas protegidas por autenticação
-      */
-     Route::group(['middleware'=>['jwt.auth']], function(){
+    /*
+    * Rotas protegidas por autenticação
+    */
+    Route::group(['middleware'=>['jwt.auth']], function () {
         /*
         * Rota para validar username
         */
-        Route::get('user/checkUnique/{username}/{id?}', 'User\UserController@checkUnique')->name('checar.username.usuario');
+        Route::get('user/checkUnique/{username}/{id?}', 'User\UserController@checkUnique');
 
         /*
         * Rotas para cadasto de Acls
         */
-        Route::get('group', 'Auth\AclController@getGroup')->name('listar.grupos');
-        Route::get('rule', 'Auth\AclController@getRule')->name('listar.permissoes');
-      });
+        Route::get('group', 'Auth\AclController@getGroup');
+        Route::get('rule', 'Auth\AclController@getRule');
+    });
+
 });
