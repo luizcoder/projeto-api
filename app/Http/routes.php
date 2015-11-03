@@ -5,7 +5,7 @@ Route::get('/', function () {
 });
 
 // Bloco de rotas da API
-Route::group(['prefix'=>'api'], function () {
+Route::group(['prefix' => 'api'], function () {
 
     /*
     * Rotas para autenticação de usuários
@@ -25,7 +25,7 @@ Route::group(['prefix'=>'api'], function () {
     /*
     * Rotas protegidas por autenticação e acls
     */
-    Route::group(['prefix'=>'user', 'middleware'=>['jwt.auth', 'acl']], function () {
+    Route::group(['prefix' => 'user', 'middleware' => ['jwt.auth', 'acl']], function () {
         /*
         * Rotas para cadastro e alteração de usuários
         */
@@ -43,13 +43,34 @@ Route::group(['prefix'=>'api'], function () {
 
         Route::post('{id}/password', 'User\UserController@updatePassword')
         ->name('alterar.senha.usuario');
+
     });
 
+    /*
+    * Rotas protegidas por autenticação e acls
+    */
+    Route::group(['prefix' => 'group', 'middleware' => ['jwt.auth', 'acl']], function () {
+        /*
+        * Rotas para cadastro e alteração de usuários
+        */
+        Route::get('', 'Group\GroupController@index')
+        ->name('listar.grupo');
+
+        Route::post('', 'Group\GroupController@store')
+        ->name('cadastrar.grupo');
+
+        Route::put('{id}', 'Group\GroupController@update')
+        ->name('alterar.grupo');
+
+        Route::delete('{id}', 'Group\GroupController@destroy')
+        ->name('deletar.grupo');
+
+    });
 
     /*
     * Rotas protegidas por autenticação
     */
-    Route::group(['middleware'=>['jwt.auth']], function () {
+    Route::group(['middleware' => ['jwt.auth']], function () {
         /*
         * Rota para validar username
         */
@@ -58,7 +79,7 @@ Route::group(['prefix'=>'api'], function () {
         /*
         * Rotas para cadasto de Acls
         */
-        Route::get('group', 'Auth\AclController@getGroup');
+        Route::get('user/group', 'Auth\AclController@getGroup');
         Route::get('rule', 'Auth\AclController@getRule');
     });
 
