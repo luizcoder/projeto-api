@@ -1,10 +1,10 @@
 <?php
 
-namespace app\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use app\EloquentSearch;
+use App\EloquentSearch;
 
 class Group extends Model
 {
@@ -51,12 +51,12 @@ class Group extends Model
 
     public function users()
     {
-        return $this->belongsToMany('app\Models\User');
+        return $this->belongsToMany('App\Models\User');
     }
 
     public function rules()
     {
-        return $this->belongsToMany('app\Models\Rule');
+        return $this->belongsToMany('App\Models\Rule');
     }
 
 
