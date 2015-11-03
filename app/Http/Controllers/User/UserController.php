@@ -5,7 +5,6 @@ namespace App\Http\Controllers\User;
 use App\Models\User;
 use Validator;
 use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
@@ -63,7 +62,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->only(['username', 'name', 'email', 'status', 'password', 'password_confirmation', 'groups']);
+        $data = $request->only(['username', 'name', 'email', 'status', 'password', 'password_confirmation', 'groups_id']);
 
         $validator = Validator::make($data, [
             'username' => 'required|unique:users|min:4',
@@ -81,7 +80,7 @@ class UserController extends Controller
         $user = User::create($data);
 
         $user->groups()->detach();
-        $user->groups()->attach(array_pluck($data['groups'], 'id'));
+        $user->groups()->attach(array_unique($data['groups_id']));
         $user->load('groups');
 
         return ['created' => true,'user' => $user];
@@ -118,12 +117,12 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->only(['username', 'name', 'email', 'status', 'groups']);
+        $data = $request->only(['username', 'name', 'email', 'status', 'groups_id']);
         $validator = Validator::make($data, [
             'username' => 'required|unique:users,username,'.$id.'|min:4',
             'name' => 'required',
             'email' => 'required|email',
-            'status' => 'required'
+            'status' => 'required',
         ]);
         if ($validator->fails()) {
             return ['updated' => false,'errors' => $validator->errors()->all()];
@@ -132,9 +131,10 @@ class UserController extends Controller
         $user->update($data);
 
         $user->groups()->detach();
-        $user->groups()->attach(array_pluck($data['groups'], 'id'));
+        $user->groups()->attach(array_unique($data['groups_id']));
 
         $user->load('groups');
+
         return ['updated' => true,'user' => $user];
     }
 
@@ -157,7 +157,7 @@ class UserController extends Controller
         }
 
         $user = User::findOrFail($id);
-        $user->update(['password'=> bcrypt($request->input('password'))]);
+        $user->update(['password' => bcrypt($request->input('password'))]);
 
         return ['updated' => true];
     }
@@ -171,9 +171,9 @@ class UserController extends Controller
     public function destroy($id)
     {
         if (User::findOrFail($id)->delete()) {
-            return ['deleted'=>true];
+            return ['deleted' => true];
         } else {
-            return ['deleted'=>false];
+            return ['deleted' => false];
         }
     }
 

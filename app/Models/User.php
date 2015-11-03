@@ -23,8 +23,7 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var string
      */
-
-    protected $appends = ['rules'];
+    protected $appends = ['rules','groups_id'];
     /**
      * The database table used by the model.
      *
@@ -53,7 +52,6 @@ class User extends Model implements AuthenticatableContract,
      */
     protected $searchable = ['username','name' ,'email','status'];
 
-
     public function getCreatedAtAttribute($date)
     {
         return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d/m/Y H:i:s');
@@ -64,9 +62,14 @@ class User extends Model implements AuthenticatableContract,
         return Carbon::createFromFormat('Y-m-d H:i:s', $date)->format('d/m/Y H:i:s');
     }
 
-    public function getRulesAttribute(){
-
+    public function getRulesAttribute()
+    {
         return $this->rules();
+    }
+
+    public function getGroupsIdAttribute()
+    {
+        return $this->groups()->lists('group_id');
     }
 
     public function groups()
@@ -80,32 +83,33 @@ class User extends Model implements AuthenticatableContract,
      * @string name
      * @return Boolean
      */
-    public function hasRule($rule_name){
+    public function hasRule($rule_name)
+    {
         $valid = false;
         $rules = $this->rules();
 
-        $array = array_where($rules, function($key, $value) use($rule_name)
-        {
-            if( $rule_name == $value->name ){
+        $array = array_where($rules, function ($key, $value) use ($rule_name) {
+            if ($rule_name == $value->name) {
                 return true;
             }
         });
 
-        if(sizeOf($array) > 0)
+        if (sizeOf($array) > 0) {
             $valid = true;
+        }
 
         return $valid;
     }
 
-
     /*
     * Retornar lista de pesmissões do usuário
     */
-    public function rules(){
+    public function rules()
+    {
         $rules = Rule::join('group_rule', 'rules.id', '=', 'group_rule.rule_id')
                      ->join('group_user', 'group_user.group_id', '=', 'group_rule.group_id')
                      ->where('group_user.user_id', $this->id)->get();
 
-         return $rules;
-     }
+        return $rules;
+    }
 }
