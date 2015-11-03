@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace app\Http\Controllers\User;
 
-use App\Models\User;
+use app\Models\User;
 use Validator;
 use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use app\Http\Requests;
+use app\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-
     public function __construct()
     {
         //
@@ -28,21 +27,19 @@ class UserController extends Controller
 
         //Caso seja enviado paramento de paginação
         //o valor padrão será alterado
-        if($request->input('per_page')){
+        if ($request->input('per_page')) {
             $per_page = $request->input('per_page');
         }
 
         //Caso seja enviado paramento para busca
-        if($request->input('search')){
-
-            $users = User::with(['groups','groups.rules'])->search($request->input('search'))
+        if ($request->input('search')) {
+            $users = User::with(['groups', 'groups.rules'])->search($request->input('search'))
                         ->paginate($per_page);
 
         // Se nenhum parametro for enviado
         // retorna todos os dados da tabela
-        }else{
-
-            $users = User::with(['groups','groups.rules'])->paginate($per_page);
+        } else {
+            $users = User::with(['groups', 'groups.rules'])->paginate($per_page);
         }
 
         return $users;
@@ -66,8 +63,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
-        $data = $request->only(['username','name','email','status','password','password_confirmation','groups']);
+        $data = $request->only(['username', 'name', 'email', 'status', 'password', 'password_confirmation', 'groups']);
 
         $validator = Validator::make($data, [
             'username' => 'required|unique:users|min:4',
@@ -85,7 +81,7 @@ class UserController extends Controller
         $user = User::create($data);
 
         $user->groups()->detach();
-        $user->groups()->attach(array_pluck($data['groups'],'id'));
+        $user->groups()->attach(array_pluck($data['groups'], 'id'));
         $user->load('groups');
 
         return ['created' => true,'user' => $user];
@@ -122,7 +118,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = $request->only(['username','name','email','status','groups']);
+        $data = $request->only(['username', 'name', 'email', 'status', 'groups']);
         $validator = Validator::make($data, [
             'username' => 'required|unique:users,username,'.$id.'|min:4',
             'name' => 'required',
@@ -136,7 +132,7 @@ class UserController extends Controller
         $user->update($data);
 
         $user->groups()->detach();
-        $user->groups()->attach(array_pluck($data['groups'],'id'));
+        $user->groups()->attach(array_pluck($data['groups'], 'id'));
 
         $user->load('groups');
         return ['updated' => true,'user' => $user];
@@ -151,8 +147,7 @@ class UserController extends Controller
      */
     public function updatePassword(Request $request, $id)
     {
-
-        $data = $request->only(['password','password_confirmation']);
+        $data = $request->only(['password', 'password_confirmation']);
         $validator = Validator::make($data, [
             'password' => 'required|confirmed|min:6',
         ]);
@@ -165,7 +160,6 @@ class UserController extends Controller
         $user->update(['password'=> bcrypt($request->input('password'))]);
 
         return ['updated' => true];
-
     }
 
     /**
@@ -176,9 +170,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if(User::findOrFail($id)->delete()) {
+        if (User::findOrFail($id)->delete()) {
             return ['deleted'=>true];
-        }else{
+        } else {
             return ['deleted'=>false];
         }
     }
@@ -190,11 +184,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function checkUnique($username, $id = null){
-        if($id == null){
-            return User::where('username',$username)->firstOrFail();
-        }else{
-            return User::where('username',$username)->where('id','<>',$id)->firstOrFail();
+    public function checkUnique($username, $id = null)
+    {
+        if ($id == null) {
+            return User::where('username', $username)->firstOrFail();
+        } else {
+            return User::where('username', $username)->where('id', '<>', $id)->firstOrFail();
         }
     }
 }

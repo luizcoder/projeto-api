@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Models;
+namespace app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use App\EloquentSearch;
+use app\EloquentSearch;
 
 class Rule extends Model
 {
@@ -41,7 +41,7 @@ class Rule extends Model
 
     public function groups()
     {
-        return $this->belongsToMany('App\Models\Groups');
+        return $this->belongsToMany('app\Models\Groups');
     }
 
 }

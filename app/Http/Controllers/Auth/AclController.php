@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace app\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use App\Models\Group;
-use App\Models\Rule;
+use app\Http\Requests;
+use app\Http\Controllers\Controller;
+use app\Models\Group;
+use app\Models\Rule;
 
 use Validator;
 
