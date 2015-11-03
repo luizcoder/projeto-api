@@ -8,13 +8,14 @@ use App\EloquentSearch;
 
 class Group extends Model
 {
+    use EloquentSearch;
+
     /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
      */
     public $timestamps = true;
-
 
     /**
      * The database table used by the model.
@@ -30,14 +31,12 @@ class Group extends Model
      */
     protected $fillable = ['name','display_name', 'description'];
 
-
     /**
      * Colunas que serão utilizadas para busca rápida
      *
      * @var array
      */
     protected $searchable = ['name','display_name' ,'description'];
-
 
     public function getCreatedAtAttribute($date)
     {
@@ -58,6 +57,4 @@ class Group extends Model
     {
         return $this->belongsToMany('App\Models\Rule');
     }
-
-
 }
