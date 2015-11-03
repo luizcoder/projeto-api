@@ -184,7 +184,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function checkUnique($username, $id = null)
+    public function unique($username, $id = null)
     {
         if ($id == null) {
             return User::where('username', $username)->firstOrFail();

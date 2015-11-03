@@ -53,7 +53,7 @@ Route::group(['prefix'=>'api'], function () {
         /*
         * Rota para validar username
         */
-        Route::get('user/checkUnique/{username}/{id?}', 'User\UserController@checkUnique');
+        Route::get('user/unique/{username}/{id?}', 'User\UserController@unique');
 
         /*
         * Rotas para cadasto de Acls
