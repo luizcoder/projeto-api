@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
 class UserTableSeeder extends Seeder
 {
@@ -12,37 +11,34 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-
         factory(App\Models\User::class, 50)->create();
 
         $users = [
             [
-                'username'=> "spock",
-                'name'=> "Spock",
-                'email'=> "spock@startrek.com",
+                'username' => 'spock',
+                'name' => 'Spock',
+                'email' => 'spock@startrek.com',
                 'status' => 'ativo',
-                'password'=> bcrypt("123456")
+                'password' => bcrypt('123456'),
             ],
             [
-                'username'=> "james",
-                'name'=> "James",
-                'email'=> "james.t@startrek.com",
+                'username' => 'james',
+                'name' => 'James',
+                'email' => 'james.t@startrek.com',
                 'status' => 'ativo',
-                'password'=> bcrypt("123456")
+                'password' => bcrypt('123456'),
             ],
             [
-                'username'=> "hikaru",
-                'name'=> "Hikaru",
-                'email'=> "hikaru@startrek.com",
+                'username' => 'hikaru',
+                'name' => 'Hikaru',
+                'email' => 'hikaru@startrek.com',
                 'status' => 'ativo',
-                'password'=> bcrypt("123456")
-            ]
+                'password' => bcrypt('123456'),
+            ],
         ];
 
-        foreach($users as $user){
-
+        foreach ($users as $user) {
             App\Models\User::create($user);
         }
-
     }
 }
