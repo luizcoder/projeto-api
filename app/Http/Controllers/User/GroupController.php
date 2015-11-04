@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Group;
+namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
+use Validator;
 use App\Http\Controllers\Controller;
 use App\Models\Group;
 
@@ -13,6 +14,13 @@ class GroupController extends Controller
         //
     }
 
+    public function validator($data)
+    {
+        return Validator::make($data, [
+            'name' => 'required',
+            'display_name' => 'required',
+        ]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -31,16 +39,16 @@ class GroupController extends Controller
 
         //Caso seja enviado paramento para busca
         if ($request->input('search')) {
-            $users = Group::with(['rules'])->search($request->input('search'))
+            $groups = Group::with(['rules'])->search($request->input('search'))
                         ->paginate($per_page);
 
         // Se nenhum parametro for enviado
         // retorna todos os dados da tabela
         } else {
-            $users = Group::with(['rules'])->paginate($per_page);
+            $groups = Group::with(['rules'])->paginate($per_page);
         }
 
-        return $users;
+        return $groups;
     }
 
     /**
@@ -61,6 +69,27 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->only(['name', 'display_name', 'description', 'rules_id']);
+
+        $validator = $this->validator($data);
+
+        if ($validator->fails()) {
+            return ['created' => false,'errors' => $validator->errors()->all()];
+        }
+
+        $group = Group::create($data);
+        $group->fill($data);
+
+        $group->rules()->detach();
+        if (isset($data['rules_id'])) {
+            $group->rules()->attach(array_unique($data['rules_id']));
+        }
+
+        $group->load('rules');
+
+        $group->save();
+
+        return ['created' => true,'group' => $group];
     }
 
     /**
@@ -93,6 +122,25 @@ class GroupController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $data = $request->only(['name', 'display_name', 'description', 'rules_id']);
+
+        $validator = $this->validator($data);
+
+        if ($validator->fails()) {
+            return ['updated' => false,'errors' => $validator->errors()->all()];
+        }
+
+        $group = Group::find($id);
+        $group->update($data);
+
+        $group->rules()->detach();
+        if (isset($data['rules_id'])) {
+            $group->rules()->attach(array_unique($data['rules_id']));
+        }
+
+        $group->load('rules');
+
+        return ['updated' => true,'group' => $group];
     }
 
     /**
@@ -103,5 +151,10 @@ class GroupController extends Controller
      */
     public function destroy($id)
     {
+        if (Group::findOrFail($id)->delete()) {
+            return ['deleted' => true];
+        } else {
+            return ['deleted' => false];
+        }
     }
 }

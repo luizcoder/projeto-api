@@ -80,7 +80,9 @@ class UserController extends Controller
         $user = User::create($data);
 
         $user->groups()->detach();
-        $user->groups()->attach(array_unique($data['groups_id']));
+        if (isset($data['groups_id'])) {
+            $user->groups()->attach(array_unique($data['groups_id']));
+        }
         $user->load('groups');
 
         return ['created' => true,'user' => $user];
@@ -131,7 +133,9 @@ class UserController extends Controller
         $user->update($data);
 
         $user->groups()->detach();
-        $user->groups()->attach(array_unique($data['groups_id']));
+        if (isset($data['groups_id'])) {
+            $user->groups()->attach(array_unique($data['groups_id']));
+        }
 
         $user->load('groups');
 

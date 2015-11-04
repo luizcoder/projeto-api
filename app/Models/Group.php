@@ -11,6 +11,13 @@ class Group extends Model
     use EloquentSearch;
 
     /**
+     * Additional Columns
+     *
+     * @var string
+     */
+    protected $appends = ['rules_id'];
+
+    /**
      * Indicates if the model should be timestamped.
      *
      * @var bool
@@ -37,6 +44,11 @@ class Group extends Model
      * @var array
      */
     protected $searchable = ['name','display_name' ,'description'];
+
+    public function getrulesIdAttribute()
+    {
+        return $this->rules()->lists('rule_id');
+    }
 
     public function getCreatedAtAttribute($date)
     {

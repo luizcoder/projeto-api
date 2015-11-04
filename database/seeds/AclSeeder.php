@@ -77,6 +77,12 @@ class AclSeeder extends Seeder
                 'description' => 'Permite deletar grupos.',
             ]);
 
+        $listRoutesRule = App\Models\Rule::create([
+                'name' => 'listar.rotas',
+                'display_name' => 'Listar rotas',
+                'description' => 'Permite listar as rotas disponíveis.',
+            ]);
+
         $adminGroup->rules()->attach([
             $listUserRule->id,
             $updateUserRule->id,
@@ -87,6 +93,8 @@ class AclSeeder extends Seeder
             $updateGroupRule->id,
             $createGroupRule->id,
             $deleteGroupRule->id,
+            $listRoutesRule->id,
+
         ]);
 
         $userGroup->rules()->attach([

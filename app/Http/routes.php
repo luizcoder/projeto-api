@@ -53,18 +53,29 @@ Route::group(['prefix' => 'api'], function () {
         /*
         * Rotas para cadastro e alteração de usuários
         */
-        Route::get('', 'Group\GroupController@index')
+        Route::get('', 'User\GroupController@index')
         ->name('listar.grupo');
 
-        Route::post('', 'Group\GroupController@store')
+        Route::post('', 'User\GroupController@store')
         ->name('cadastrar.grupo');
 
-        Route::put('{id}', 'Group\GroupController@update')
+        Route::put('{id}', 'User\GroupController@update')
         ->name('alterar.grupo');
 
-        Route::delete('{id}', 'Group\GroupController@destroy')
+        Route::delete('{id}', 'User\GroupController@destroy')
         ->name('deletar.grupo');
 
+    });
+
+    /*
+    * Rotas protegidas por autenticação e acls
+    */
+    Route::group(['prefix' => 'rule', 'middleware' => ['jwt.auth', 'acl']], function () {
+        /*
+        * Rota para listar de permissões
+        */
+        Route::get('', 'User\RuleController@index')
+        ->name('listar.rotas');
     });
 
     /*
